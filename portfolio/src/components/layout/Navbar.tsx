@@ -62,6 +62,12 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
 
             {/* Actions */}
             <div className="flex items-center gap-3">
+              <a
+                href="/admin"
+                className="hidden md:inline-flex text-sm text-[var(--ink-secondary)] hover:text-[var(--ink)] transition-colors link-underline"
+              >
+                Admin
+              </a>
               {mounted && (
                 <button
                   onClick={toggleTheme}
@@ -115,8 +121,15 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
                 className="text-lg font-display font-semibold text-[var(--ink-secondary)] hover:text-[var(--ink)] transition-colors py-1"
               >
                 {link.label}
-              </a>
+                </a>
             ))}
+            <a
+              href="/admin"
+              onClick={() => setMenuOpen(false)}
+              className="text-lg font-display font-semibold text-[var(--ink-secondary)] hover:text-[var(--ink)] transition-colors py-1"
+            >
+              Admin
+            </a>
           </div>
           <a
             href={siteConfig.resumeUrl}
