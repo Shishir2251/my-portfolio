@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminStorage } from "@/lib/firebase/admin";
 import { requireAdminUser } from "@/lib/cms";
@@ -35,34 +36,46 @@ export async function POST(request: NextRequest) {
 
     const bucketName = process.env.FIREBASE_STORAGE_BUCKET ?? process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
     if (!bucketName) {
-      return NextResponse.json({ error: "Missing storage bucket name." }, { status: 500 });
+      return NextResponse.json({ error: "Missing storage bucket name.", stage: "bucket-name" }, { status: 500 });
     }
 
     const bucket = storage.bucket(bucketName);
+
     const uploadFile = file as { arrayBuffer: () => Promise<ArrayBuffer>; name: string };
     const buffer = Buffer.from(await uploadFile.arrayBuffer());
     const safeName = filename.toLowerCase().replace(/[^a-z0-9.-]+/g, "-");
     const path = `${folder}/${safeName}`;
     const bucketFile = bucket.file(path);
+    const downloadToken = randomUUID();
 
-    await bucketFile.save(buffer, {
-      metadata: {
-        contentType: "application/pdf",
+    try {
+      await bucketFile.save(buffer, {
         metadata: {
-          originalName: file.name,
-          uploadedAt: new Date().toISOString(),
+          contentType: "application/pdf",
+          metadata: {
+            firebaseStorageDownloadTokens: downloadToken,
+            originalName: uploadFile.name,
+            uploadedAt: new Date().toISOString(),
+          },
         },
-      },
-      resumable: false,
-    });
+        resumable: false,
+      });
+    } catch (error) {
+      console.error("Resume upload save failed", error);
+      return NextResponse.json(
+        {
+          error: error instanceof Error ? error.message : "Failed to save file to Storage.",
+          stage: "save",
+        },
+        { status: 500 }
+      );
+    }
 
-    await bucketFile.makePublic().catch(() => undefined);
+    const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(path)}?alt=media&token=${downloadToken}`;
 
-    const publicUrl = bucketFile.publicUrl();
-
-    return NextResponse.json({ url: publicUrl, path });
+    return NextResponse.json({ url: publicUrl, path, stage: "ok" });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Upload failed.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return NextResponse.json({ error: message, stage: "request" }, { status: 400 });
   }
 }

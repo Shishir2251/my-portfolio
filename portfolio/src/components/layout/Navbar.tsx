@@ -1,17 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X, Download } from "lucide-react";
 import { defaultPortfolioContent, type PortfolioContent } from "@/lib/content";
-
-const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Services", href: "#services" },
-  { label: "Blog", href: "#blog" },
-  { label: "Contact", href: "#contact" },
-];
+import { sitePages } from "@/lib/site-pages";
 
 export function Navbar({ content = defaultPortfolioContent }: { content?: PortfolioContent }) {
   const { siteConfig } = content;
@@ -28,6 +22,7 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
   }, []);
 
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+  const navLinks = sitePages.filter((page) => ["/about", "/skills", "/projects", "/services", "/blog", "/contact"].includes(page.href));
 
   return (
     <>
@@ -38,36 +33,33 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
       >
         <div className="container-narrow">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <a
-              href="#"
+            <Link
+              href="/"
               className="font-display text-lg font-700 tracking-tight hover:opacity-70 transition-opacity"
             >
               {siteConfig.name}
               <span className="text-[var(--ink-muted)]">.</span>
-            </a>
+            </Link>
 
-            {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-6">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
                   className="text-sm text-[var(--ink-secondary)] hover:text-[var(--ink)] transition-colors link-underline"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </nav>
 
-            {/* Actions */}
             <div className="flex items-center gap-3">
-              <a
+              <Link
                 href="/admin"
                 className="hidden md:inline-flex text-sm text-[var(--ink-secondary)] hover:text-[var(--ink)] transition-colors link-underline"
               >
                 Admin
-              </a>
+              </Link>
               {mounted && (
                 <button
                   onClick={toggleTheme}
@@ -97,7 +89,6 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
         </div>
       </header>
 
-      {/* Mobile Menu */}
       <div
         className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ${
           menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -114,22 +105,22 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
         >
           <div className="pt-12 flex flex-col gap-4">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 className="text-lg font-display font-semibold text-[var(--ink-secondary)] hover:text-[var(--ink)] transition-colors py-1"
               >
                 {link.label}
-                </a>
+              </Link>
             ))}
-            <a
+            <Link
               href="/admin"
               onClick={() => setMenuOpen(false)}
               className="text-lg font-display font-semibold text-[var(--ink-secondary)] hover:text-[var(--ink)] transition-colors py-1"
             >
               Admin
-            </a>
+            </Link>
           </div>
           <a
             href={siteConfig.resumeUrl}

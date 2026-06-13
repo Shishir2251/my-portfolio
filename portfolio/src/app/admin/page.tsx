@@ -133,7 +133,7 @@ export default function AdminPage() {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error ?? "Upload failed.");
+        throw new Error(`${data.stage ? `[${data.stage}] ` : ""}${data.error ?? "Upload failed."}`);
       }
 
       const nextContent = {
