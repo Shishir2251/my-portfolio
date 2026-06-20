@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, ExternalLink, Shield, Sparkles } from "lucide-react";
 import { getPortfolioContent } from "@/lib/cms";

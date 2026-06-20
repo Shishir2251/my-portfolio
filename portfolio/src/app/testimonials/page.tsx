@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Testimonials } from "@/components/sections/Testimonials";
 import { SectionPageShell } from "@/components/layout/SectionPageShell";
 import { getPortfolioContent } from "@/lib/cms";
