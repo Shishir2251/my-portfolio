@@ -1,8 +1,10 @@
+const DEFAULT_RESUME_URL = "https://drive.google.com/file/d/1LEon_FIuO_QzKh8R733l5zgV-hdApr3x/view?usp=sharing";
+
 export function getResumeHref(url: string) {
   const value = url.trim();
 
-  if (!value) {
-    return "/resume.pdf";
+  if (!value || value === "/resume.pdf") {
+    return DEFAULT_RESUME_URL;
   }
 
   try {
@@ -20,6 +22,10 @@ export function getResumeHref(url: string) {
 
     return parsed.toString();
   } catch {
-    return value.startsWith("/") ? value : `https://${value}`;
+    if (value.startsWith("/")) {
+      return DEFAULT_RESUME_URL;
+    }
+
+    return `https://${value}`;
   }
 }
