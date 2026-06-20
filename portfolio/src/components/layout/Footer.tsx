@@ -1,9 +1,11 @@
 import { Github, Linkedin, Mail, Download, ArrowUpRight } from "lucide-react";
 import { defaultPortfolioContent, type PortfolioContent } from "@/lib/content";
+import { getResumeHref } from "@/lib/resume-url";
 
 export function Footer({ content = defaultPortfolioContent }: { content?: PortfolioContent }) {
   const { siteConfig } = content;
   const year = new Date().getFullYear();
+  const resumeHref = getResumeHref(siteConfig.resumeUrl);
 
   return (
     <footer className="border-t border-[var(--border)] py-12">
@@ -50,7 +52,7 @@ export function Footer({ content = defaultPortfolioContent }: { content?: Portfo
               <Mail size={15} />
               <span className="hidden sm:inline">Email</span>
             </a>
-            <a href={siteConfig.resumeUrl} download className="btn-primary py-2 px-3 text-sm">
+            <a href={resumeHref} download className="btn-primary py-2 px-3 text-sm">
               <Download size={15} />
               <span className="hidden sm:inline">Resume</span>
             </a>

@@ -7,7 +7,7 @@ Personal portfolio built with Next.js and Firebase, designed to work as a CMS-ba
 - Next.js App Router
 - Firebase Authentication for admin login
 - Firestore-backed CMS content
-- Serverless API route for reading and saving content
+- Admin-managed resume URL
 - Dynamic portfolio sections with placeholder fallback data
 - Protected `/admin` dashboard for content editing
 
@@ -77,7 +77,6 @@ portfolio-cms/content
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 
@@ -86,6 +85,13 @@ FIREBASE_CLIENT_EMAIL=
 FIREBASE_PRIVATE_KEY=
 FIREBASE_ADMIN_EMAIL=
 ```
+
+## Resume Link
+
+- The admin dashboard stores a public resume URL in Firestore
+- The homepage download button uses `siteConfig.resumeUrl`
+- You can paste a direct PDF URL from Google Drive, Dropbox, Cloudinary, S3, or any public file host
+- Google Drive share links are converted to a direct download URL automatically
 
 ## Firestore Data Shape
 
@@ -109,6 +115,7 @@ If the document does not exist, the site falls back to the built-in placeholder 
 - `.env.local` is ignored by git
 - Firebase service account JSON files should never be committed
 - The site still renders default placeholder content if Firestore is unavailable
+- Resume hosting is external to the app, so file persistence is handled by your chosen cloud provider
 
 ## License
 

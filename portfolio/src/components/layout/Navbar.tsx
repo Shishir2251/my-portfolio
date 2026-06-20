@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X, Download } from "lucide-react";
 import { defaultPortfolioContent, type PortfolioContent } from "@/lib/content";
+import { getResumeHref } from "@/lib/resume-url";
 import { sitePages } from "@/lib/site-pages";
 
 export function Navbar({ content = defaultPortfolioContent }: { content?: PortfolioContent }) {
@@ -23,6 +24,7 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
 
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
   const navLinks = sitePages.filter((page) => ["/about", "/skills", "/projects", "/services", "/blog", "/contact"].includes(page.href));
+  const resumeHref = getResumeHref(siteConfig.resumeUrl);
 
   return (
     <>
@@ -70,7 +72,7 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
                 </button>
               )}
               <a
-                href={siteConfig.resumeUrl}
+                href={resumeHref}
                 download
                 className="hidden md:inline-flex btn-primary text-sm py-2 px-4"
               >
@@ -123,7 +125,7 @@ export function Navbar({ content = defaultPortfolioContent }: { content?: Portfo
             </Link>
           </div>
           <a
-            href={siteConfig.resumeUrl}
+            href={resumeHref}
             download
             className="btn-primary mt-auto"
             onClick={() => setMenuOpen(false)}

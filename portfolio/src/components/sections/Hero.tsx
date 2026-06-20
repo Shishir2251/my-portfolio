@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Download, ExternalLink, Mail } from "lucide-react";
 import { defaultPortfolioContent, type PortfolioContent } from "@/lib/content";
+import { getResumeHref } from "@/lib/resume-url";
 
 const container = {
   hidden: { opacity: 0 },
@@ -18,6 +19,7 @@ const item = {
 
 export function Hero({ content = defaultPortfolioContent }: { content?: PortfolioContent }) {
   const { siteConfig } = content;
+  const resumeHref = getResumeHref(siteConfig.resumeUrl);
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20">
@@ -92,7 +94,7 @@ export function Hero({ content = defaultPortfolioContent }: { content?: Portfoli
             <a href="#contact" className="btn-outline">
               Hire Me
             </a>
-            <a href={siteConfig.resumeUrl} download className="btn-outline">
+            <a href={resumeHref} download className="btn-outline">
               <Download size={14} />
               Resume
             </a>

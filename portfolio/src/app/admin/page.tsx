@@ -36,7 +36,6 @@ export default function AdminPage() {
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [loadingContent, setLoadingContent] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [uploadingResume, setUploadingResume] = useState(false);
   const [content, setContent] = useState<PortfolioContent>(defaultPortfolioContent);
   const [authForm, setAuthForm] = useState(initialAuthForm);
 
@@ -94,64 +93,6 @@ export default function AdminPage() {
       ...prev,
       about: { ...prev.about, [key]: value },
     }));
-  };
-
-  const handleResumeUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-
-    if (!file) return;
-    if (file.type !== "application/pdf") {
-      toast.error("Please upload a PDF file.");
-      return;
-    }
-
-    const auth = getFirebaseAuth();
-    if (!auth || !auth.currentUser) {
-      toast.error("Please sign in first.");
-      return;
-    }
-
-    setUploadingResume(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", "resumes");
-      formData.append(
-        "filename",
-        `${content.siteConfig.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-cv.pdf`
-      );
-
-      const token = await auth.currentUser.getIdToken();
-      const response = await fetch("/api/resume", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(`${data.stage ? `[${data.stage}] ` : ""}${data.error ?? "Upload failed."}`);
-      }
-
-      const nextContent = {
-        ...content,
-        siteConfig: {
-          ...content.siteConfig,
-          resumeUrl: data.url,
-        },
-      };
-
-      await saveContentToApi(nextContent);
-      toast.success("CV uploaded and saved successfully.");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "CV upload failed.";
-      toast.error(message);
-    } finally {
-      setUploadingResume(false);
-    }
   };
 
   const updateAboutStat = (index: number, key: "label" | "value" | "suffix", value: string) => {
@@ -775,31 +716,11 @@ export default function AdminPage() {
                 </div>
 
                 <div className="border-t border-[var(--border)] pt-4 space-y-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h4 className="font-display text-sm font-semibold">Resume PDF</h4>
-                      <p className="text-xs text-[var(--ink-muted)]">Upload a PDF to Firebase Storage. This link is used by the homepage download button.</p>
-                    </div>
-                    <label className="btn-outline py-2 px-3 text-xs cursor-pointer">
-                      {uploadingResume ? (
-                        <>
-                          <Loader2 size={12} className="animate-spin" />
-                          Uploading...
-                        </>
-                      ) : (
-                        <>
-                          <Plus size={12} />
-                          Choose PDF
-                        </>
-                      )}
-                      <input
-                        type="file"
-                        accept="application/pdf"
-                        className="hidden"
-                        onChange={handleResumeUpload}
-                        disabled={uploadingResume}
-                      />
-                    </label>
+                  <div>
+                    <h4 className="font-display text-sm font-semibold">Resume Link</h4>
+                    <p className="text-xs text-[var(--ink-muted)]">
+                      Paste a public resume URL from Google Drive, Dropbox, Cloudinary, S3, or any direct PDF link. Google Drive share links will be converted to a direct download URL automatically.
+                    </p>
                   </div>
                   <Field
                     label="Resume URL"
@@ -807,7 +728,7 @@ export default function AdminPage() {
                     onChange={(value) => updateSiteConfig("resumeUrl", value)}
                   />
                   <p className="text-xs text-[var(--ink-muted)] break-all">
-                    Current file: {content.siteConfig.resumeUrl || "No resume uploaded yet."}
+                    Current URL: {content.siteConfig.resumeUrl || "No resume URL set yet."}
                   </p>
                 </div>
               </div>

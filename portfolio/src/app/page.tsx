@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, ExternalLink, Shield, Sparkles } from "lucide-react";
 import { getPortfolioContent } from "@/lib/cms";
+import { getResumeHref } from "@/lib/resume-url";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
@@ -19,6 +20,7 @@ function formatLabel(label: string) {
 
 export default async function Home() {
   const content = await getPortfolioContent();
+  const resumeHref = getResumeHref(content.siteConfig.resumeUrl);
   const featuredProjects = content.projects.filter((project) => project.featured).slice(0, 3);
   const techGroups = [
     {
@@ -95,7 +97,7 @@ export default async function Home() {
                 <Link href="/contact" className="btn-outline">
                   Contact me
                 </Link>
-                <a href={content.siteConfig.resumeUrl} download className="btn-outline">
+                <a href={resumeHref} download className="btn-outline">
                   Download CV
                   <ExternalLink size={14} />
                 </a>
