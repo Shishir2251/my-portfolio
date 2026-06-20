@@ -10,7 +10,7 @@ export const siteConfig = {
   email: "shishir@example.com",
   github: "https://github.com/shishir",
   linkedin: "https://linkedin.com/in/shishir",
-  resumeUrl: "/resume.pdf",
+  resumeUrl: "https://drive.google.com/file/d/1LEon_FIuO_QzKh8R733l5zgV-hdApr3x/view?usp=sharing",
   seo: {
     description: "Shishir — AI Engineer & Full Stack Developer specializing in LLM applications, computer vision, and scalable web systems.",
     keywords: "AI Engineer, Full Stack Developer, LLM, OpenAI, Next.js, Python, Machine Learning",
